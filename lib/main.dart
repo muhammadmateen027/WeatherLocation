@@ -29,9 +29,9 @@ void main() {
 
 class Home extends StatefulWidget {
   final drawerItems = [
-    new DrawerItem("Fragment 1", Icons.rss_feed),
-    new DrawerItem("Fragment 2", Icons.local_pizza),
-    new DrawerItem("Fragment 3", Icons.info)
+    new DrawerItem("Location", Icons.rss_feed),
+    new DrawerItem("Weather List", Icons.local_pizza),
+    new DrawerItem("Nothing", Icons.info)
   ];
 
   @override
