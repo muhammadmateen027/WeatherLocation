@@ -5,18 +5,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as LocationManager;
 import '../place_detail.dart';
 
-
 const kGoogleApiKey = "AIzaSyBZoeylp_uRm0JhnYQAHz1Q81u3MOwf8JY";
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
 class LocationFragment extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return new LocationFragmentContent();
   }
-
 }
 
 class LocationFragmentContent extends StatefulWidget {
@@ -30,14 +27,13 @@ class LocationState extends State<LocationFragmentContent> {
   bool isLoading = false;
   String errorMessage;
 
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
 
-      Widget expandedChild;
+    Widget expandedChild;
 
-if (isLoading) {
+    if (isLoading) {
       expandedChild = Center(child: CircularProgressIndicator(value: null));
     } else if (errorMessage != null) {
       expandedChild = Center(
@@ -47,25 +43,23 @@ if (isLoading) {
       expandedChild = buildPlacesList();
     }
     return new Column(
-          children: <Widget>[
-            Container(
-              child: SizedBox(
-                  height: 200.0,
-                  child: GoogleMap(
-                      onMapCreated: _onMapCreated,
-                      options: GoogleMapOptions(
-                          myLocationEnabled: true,
-                          cameraPosition:
-                              const CameraPosition(target: LatLng(0.0, 0.0))))),
-            ),
-            Expanded(child: expandedChild)
-          ],
-        );
+      children: <Widget>[
+        Container(
+          child: SizedBox(
+              height: 200.0,
+              child: GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  options: GoogleMapOptions(
+                      myLocationEnabled: true,
+                      cameraPosition:
+                          const CameraPosition(target: LatLng(0.0, 0.0))))),
+        ),
+        Expanded(child: expandedChild)
+      ],
+    );
   }
 
-
-
-void refresh() async {
+  void refresh() async {
     final center = await getUserLocation();
 
     mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -220,5 +214,4 @@ void refresh() async {
 
     return ListView(shrinkWrap: true, children: placesWidget);
   }
-
 }

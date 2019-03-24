@@ -54,30 +54,34 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
       final center = LatLng(lat, lng);
 
       title = placeDetail.name;
-      bodyChild = Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-              child: SizedBox(
-            height: 200.0,
-            child: GoogleMap(
-              onMapCreated: _onMapCreated,
-              options: GoogleMapOptions(
-                  myLocationEnabled: true,
-                  cameraPosition: CameraPosition(target: center, zoom: 15.0)),
-            ),
-          )),
-          Expanded(
-            child: buildPlaceDetailList(placeDetail),
-          )
-        ],
+      bodyChild = new Container(
+        decoration: appBackground(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+                child: SizedBox(
+              height: 200.0,
+              child: GoogleMap(
+                onMapCreated: _onMapCreated,
+                options: GoogleMapOptions(
+                    myLocationEnabled: true,
+                    cameraPosition: CameraPosition(target: center, zoom: 15.0)),
+              ),
+            )),
+            Expanded(
+              child: buildPlaceDetailList(placeDetail),
+            )
+          ],
+        ),
       );
     }
 
     return Scaffold(
         appBar: AppBar(
           title: Text(title),
+          backgroundColor: const Color(0xFF004d4d),
         ),
         body: bodyChild);
   }
@@ -149,7 +153,8 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
               EdgeInsets.only(top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
           child: Text(
             placeDetail.name,
-            style: Theme.of(context).textTheme.subtitle,
+            style: new TextStyle(color: Colors.white,
+              fontWeight: FontWeight.bold)
           )),
     );
 
@@ -160,7 +165,7 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
                 EdgeInsets.only(top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
             child: Text(
               placeDetail.formattedAddress,
-              style: Theme.of(context).textTheme.body1,
+             style: new TextStyle(color: Colors.white)
             )),
       );
     }
@@ -172,7 +177,7 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
                 EdgeInsets.only(top: 4.0, left: 8.0, right: 8.0, bottom: 0.0),
             child: Text(
               placeDetail.types.first.toUpperCase(),
-              style: Theme.of(context).textTheme.caption,
+              style: new TextStyle(color: Colors.white)
             )),
       );
     }
@@ -237,4 +242,26 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
       children: list,
     );
   }
+
+
+  BoxDecoration appBackground() {
+    return new BoxDecoration(
+      // Box decoration takes a gradient
+      gradient: LinearGradient(
+        // Where the linear gradient begins and ends
+        begin: Alignment.topRight,
+        end: Alignment.bottomLeft,
+        // Add one stop for each color. Stops should increase from 0 to 1
+        // stops: [0.5, 0.8, 0.9, 0.3],
+        stops: [0.5, 0.2, 1.0, 0.3],
+        colors: [
+          // Colors are easy thanks to Flutter's Colors class.
+          const Color(0xFF008080),
+          const Color(0xFF999966),
+          const Color(0xFF666600),
+          const Color(0xFFff8b54),
+        ],
+      ),
+    );
+}
 }
