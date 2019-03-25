@@ -118,7 +118,6 @@ class HomeState extends State<Home> {
 
 
   Future<void> _handlePressButton() async {
-    print("icon Button Pressed: ");
     try {
       Prediction p = await PlacesAutocomplete.show(
           context: context,
