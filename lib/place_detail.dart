@@ -11,7 +11,7 @@ const kGoogleApiKey = "AIzaSyBZoeylp_uRm0JhnYQAHz1Q81u3MOwf8JY";
 const weather_api_key = "5eb149801bb9c8508d7c6a3df7df6aa6";
 
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
-var plceDetailId;
+String plceDetailId;
 
 class PlaceDetailWidget extends StatefulWidget {
   String placeId;
@@ -19,7 +19,7 @@ class PlaceDetailWidget extends StatefulWidget {
   PlaceDetailWidget(String placeId) {
     print("Hello Mateen Here:: " + placeId);
     this.placeId = placeId;
-    if (placeId != null) plceDetailId = placeId;
+    if (placeId != null) plceDetailId = placeId.toString();
   }
 
   @override
@@ -359,7 +359,7 @@ Future<Weather> fetchPost(String cityName) async {
     return Weather.fromJson(json.decode(response.body));
   } else {
     // If that call was not successful, throw an error.
-    throw Exception('Failed to load post');
+    throw Exception('WeatherAPI Failed to load post');
   }
 }
 
