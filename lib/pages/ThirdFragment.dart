@@ -50,23 +50,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //  _fetchData();
-    return Container(
-        child: FutureBuilder(
-      future: _fetchData(),
-      builder: (context, snapshot) {
-        return ListView.builder(
-            itemCount: list.length,
-            itemBuilder: (BuildContext context, int index) {
-              // print('====>>>>  ' + list[0].city);
-              // return Container();
-              return ListTile(
-                contentPadding: EdgeInsets.all(10.0),
-                title: new Text(list[index].city),
-              );
-            });
-      },
-    ));
+     _fetchData();
+    return Container();
+    //   child: FutureBuilder(
+    //   future: _fetchData(),
+    //   builder: (context, snapshot) {
+    //     return ListView.builder(
+    //         itemCount: list.length,
+    //         itemBuilder: (BuildContext context, int index) {
+    //           // print('====>>>>  ' + list[0].city);
+    //           // return Container();
+    //           return ListTile(
+    //             contentPadding: EdgeInsets.all(10.0),
+    //             title: new Text(list[index].city),
+    //           );
+    //         });
+    //   },
+    // ));
   }
 
   _fetchData() async {

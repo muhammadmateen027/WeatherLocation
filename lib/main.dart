@@ -29,7 +29,7 @@ class Home extends StatefulWidget {
   final drawerItems = [
     new DrawerItem("Location", Icons.location_on),
     new DrawerItem("Weather List", Icons.cloud),
-    new DrawerItem("Nothing", Icons.info)
+    new DrawerItem("History", Icons.info)
   ];
 
   @override
@@ -46,7 +46,7 @@ class HomeState extends State<Home> {
       case 0:
         return new LocationFragment();
       case 1:
-        return new SecondFragment();
+        return new ListFragment();
       case 2:
         return new ThirdFragment();
 

@@ -5,19 +5,21 @@ import 'pages/models/weather.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'pages/models/weatherData.dart';
 
 const kGoogleApiKey = "AIzaSyBZoeylp_uRm0JhnYQAHz1Q81u3MOwf8JY";
 const weather_api_key = "5eb149801bb9c8508d7c6a3df7df6aa6";
 
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
+var plceDetailId;
 
 class PlaceDetailWidget extends StatefulWidget {
   String placeId;
 
   PlaceDetailWidget(String placeId) {
-    print("Hello Mateen Here:: "+placeId);
+    print("Hello Mateen Here:: " + placeId);
     this.placeId = placeId;
+    if (placeId != null) plceDetailId = placeId;
   }
 
   @override
@@ -137,7 +139,6 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
   }
 
   Container buildPlaceDetailList(PlaceDetails placeDetail) {
-
     return Container(
       // shrinkWrap: true,
       child: new Container(
@@ -148,7 +149,6 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
       ),
     );
   }
-
 
   BoxDecoration appBackground() {
     return new BoxDecoration(
@@ -174,185 +174,202 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
   Container locationInfo(String cityName) {
     List<Widget> weatherList = [];
     return Container(
-          child: FutureBuilder<Weather>(
-            future: fetchPost(cityName),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.data.name != null && snapshot.data.sys.country != null) { // For name
-                  weatherList.add(
-                    Center(
-                        child: Padding(
-                        padding:
-                          EdgeInsets.only(top: 0.0, left: 4.0, right: 8.0, bottom: 4.0),
-                          child: Text(
-                            snapshot.data.name + ', '+snapshot.data.sys.country,
-                            style: new TextStyle(color: Colors.white,
+      child: FutureBuilder<Weather>(
+        future: fetchPost(cityName),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var map = new Map<String, dynamic>();
+            map["city"] = snapshot.data.name;
+            map["country"] = snapshot.data.sys.country;
+            map["placeId"] = plceDetailId.toString();
+            map["temp"] = snapshot.data.main.temp.toString();
+            map["pressure"] = snapshot.data.main.pressure.toString();
+            map["humidity"] = snapshot.data.main.humidity.toString();
+            map["minTemp"] = snapshot.data.main.tempMin.toString();
+            map["maxTemp"] = snapshot.data.main.tempMax.toString();
+            map["timeStamp"] =
+                new DateTime.now().millisecondsSinceEpoch.toString();
+
+           
+
+            if (snapshot.data.name != null &&
+                snapshot.data.sys.country != null) {
+              // For name
+              weatherList.add(
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 0.0, left: 4.0, right: 8.0, bottom: 4.0),
+                    child: Text(
+                        snapshot.data.name + ', ' + snapshot.data.sys.country,
+                        style: new TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30.0)),
+                  ),
+                ),
+              );
+            }
+
+            if (snapshot.data.main.temp != null) {
+              weatherList.add(
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
+                  child: new Row(
+                    children: <Widget>[
+                      Text("Temperature: ",
+                          style: new TextStyle(
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 30.0)
-                          ),
-                          ),
-                    ),
-                  );
-                }
+                              fontSize: 20.0)),
+                      Text(snapshot.data.main.temp.toString() + " C",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 18.0))
+                    ],
+                  ),
+                ),
+              );
+            }
 
+            if (snapshot.data.main.pressure != null) {
+              weatherList.add(
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
+                  child: new Row(
+                    children: <Widget>[
+                      Text("Pressure: ",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0)),
+                      Text(snapshot.data.main.pressure.toString() + "%",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0))
+                    ],
+                  ),
+                ),
+              );
+            }
 
-                if (snapshot.data.main.temp != null) {
+            if (snapshot.data.main.humidity != null) {
+              weatherList.add(
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
+                  child: new Row(
+                    children: <Widget>[
+                      Text("Humidity: ",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0)),
+                      Text(snapshot.data.main.humidity.toString() + "%",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0))
+                    ],
+                  ),
+                ),
+              );
+            }
 
-                  weatherList.add(
-                    Padding(
-                        padding:
-                            EdgeInsets.only(top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
-                        child: new Row(
-                          children: <Widget>[
-                            Text(
-                              "Temperature: ",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0)
-                            ),
-                            Text(
-                              snapshot.data.main.temp.toString()+ " C",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18.0)
-                            )
-                          ],
-                        ),
-                        ),
-                  );
-                }
+            if (snapshot.data.main.tempMin != null) {
+              weatherList.add(
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
+                  child: new Row(
+                    children: <Widget>[
+                      Text("Min Temp: ",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0)),
+                      Text(snapshot.data.main.tempMin.toString() + " C",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0))
+                    ],
+                  ),
+                ),
+              );
+            }
 
-                if (snapshot.data.main.pressure != null) {
+            if (snapshot.data.main.tempMax != null) {
+              weatherList.add(
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
+                  child: new Row(
+                    children: <Widget>[
+                      Text("Max Temp: ",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0)),
+                      Text(snapshot.data.main.tempMax.toString() + " C",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0))
+                    ],
+                  ),
+                ),
+              );
+            }
 
-                  weatherList.add(
-                    Padding(
-                        padding:
-                            EdgeInsets.only(top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
-                        child: new Row(
-                          children: <Widget>[
-                            Text(
-                              "Pressure: ",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0)
-                            ),
-                            Text(
-                              snapshot.data.main.pressure.toString() + "%",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16.0)
-                            )
-                          ],
-                        ),
-                        ),
-                  );
-                }
+            
+            createPost(body: map);
 
-                if (snapshot.data.main.humidity != null) {
+            return ListView(
+              shrinkWrap: true,
+              children: weatherList,
+            );
+            // return Text(snapshot.data.name);
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
 
-                  weatherList.add(
-                    Padding(
-                        padding:
-                            EdgeInsets.only(top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
-                        child: new Row(
-                          children: <Widget>[
-                            Text(
-                              "Humidity: ",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0)
-                            ),
-                            Text(
-                              snapshot.data.main.humidity.toString() + "%",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16.0)
-                            )
-                          ],
-                        ),
-                        ),
-                  );
-                }
-
-                if (snapshot.data.main.tempMin != null) {
-
-                  weatherList.add(
-                    Padding(
-                        padding:
-                            EdgeInsets.only(top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
-                        child: new Row(
-                          children: <Widget>[
-                            Text(
-                              "Min Temp: ",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0)
-                            ),
-                            Text(
-                              snapshot.data.main.tempMin.toString() + " C",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16.0)
-                            )
-                          ],
-                        ),
-                        ),
-                  );
-                }
-
-                if (snapshot.data.main.tempMax != null) {
-
-                  weatherList.add(
-                    Padding(
-                        padding:
-                            EdgeInsets.only(top: 4.0, left: 8.0, right: 8.0, bottom: 4.0),
-                        child: new Row(
-                          children: <Widget>[
-                            Text(
-                              "Max Temp: ",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0)
-                            ),
-                            Text(
-                              snapshot.data.main.tempMax.toString() + " C",
-                              style: new TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16.0)
-                            )
-                          ],
-                        ),
-                        ),
-                  );
-                }
-
-                return ListView(
-                  shrinkWrap: true,
-                  children: weatherList,
-                );
-                // return Text(snapshot.data.name);
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
-
-              // By default, show a loading spinner
-              return CircularProgressIndicator();
-            },
-          ),
-        );
+          // By default, show a loading spinner
+          return CircularProgressIndicator();
+        },
+      ),
+    );
   }
 }
 
-
 Future<Weather> fetchPost(String cityName) async {
-  final response =
-      await http.get('http://api.openweathermap.org/data/2.5/weather?q='+cityName+'&units=metric&appid='+weather_api_key);
+  final response = await http.get(
+      'http://api.openweathermap.org/data/2.5/weather?q=' +
+          cityName +
+          '&units=metric&appid=' +
+          weather_api_key);
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON
+    print("Response String: " + response.body);
     return Weather.fromJson(json.decode(response.body));
   } else {
     // If that call was not successful, throw an error.
     throw Exception('Failed to load post');
   }
+}
+
+Future<WeatherData> createPost({Map body}) async {
+  String url = 'https://weatherapp-97622.firebaseapp.com/api/v1/weather';
+  final response = await http.post(url, body: body);
+  if (response.statusCode < 200 || response.statusCode > 400 || json == null) {
+    throw new Exception("Error while fetching data");
+  }
+
+  print("Data Posted into Db: " + response.body);
+  return WeatherData.fromJson(json.decode(response.body));
 }
