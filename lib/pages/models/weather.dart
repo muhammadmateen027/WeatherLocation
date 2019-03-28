@@ -225,3 +225,4 @@ class Wind {
         "deg": deg,
     };
 }
+

@@ -69,12 +69,10 @@ class WeatherState extends State<WeatherPageContent> {
                           builder: (context, snapshot) {
                             String hello = "Here is error";
                             if (snapshot.hasData) {
-                              hello =snapshot.data.toString();
-                            } 
-                            final snackBar =
-                                SnackBar(content: Text(hello));
+                              hello = snapshot.data.toString();
+                            }
+                            final snackBar = SnackBar(content: Text(hello));
                             Scaffold.of(context).showSnackBar(snackBar);
-                            
                           },
                         ),
                       );
@@ -125,14 +123,14 @@ Future<String> removeFromFireBase(String placeId) async {
     //     .map((data) => new CustomWeather.fromJson(data))
     //     .toList();
     // return CustomWeather.fromJson(json.decode(response.body));
+    var logs = new Map<String, dynamic>();
+    logs["action"] = "Deleted";
+    createLogs(body: logs);
     return response.body;
-
   } else {
     // If that call was not successful, throw an error.
     throw Exception('Failed to load post');
   }
-
-  
 }
 
 Card getCard(BuildContext context, CustomWeather weather) {
@@ -215,11 +213,10 @@ ListTile getTile(BuildContext context, CustomWeather weather) {
   );
 }
 
-
 void _onLoginTapped(BuildContext context, String placeId) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => new PlaceDetailWidget(placeId),
-        ));
-  }
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => new PlaceDetailWidget(placeId),
+      ));
+}

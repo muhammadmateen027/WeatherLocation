@@ -286,6 +286,9 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
 
             
             createPost(body: map);
+            var logs = new Map<String, dynamic>();
+            logs["action"] = "Created";
+            createLogs(body: logs);
 
             return ListView(
               shrinkWrap: true,
@@ -320,12 +323,18 @@ Future<Weather> fetchPost(String cityName) async {
   }
 }
 
-Future<WeatherData> createPost({Map body}) async {
+void createPost({Map body}) async {
   String url = 'https://weatherapp-97622.firebaseapp.com/api/v1/weather';
   final response = await http.post(url, body: body);
   if (response.statusCode < 200 || response.statusCode > 400 || json == null) {
     throw new Exception("Error while fetching data");
   }
+}
 
-  return WeatherData.fromJson(json.decode(response.body));
+void createLogs({Map body}) async {
+  String url = 'https://weatherapp-97622.firebaseapp.com/api/v1/weatherlogs';
+  final response = await http.post(url, body: body);
+  if (response.statusCode < 200 || response.statusCode > 400 || json == null) {
+    throw new Exception("Error while fetching data");
+  } 
 }
