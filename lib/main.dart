@@ -81,7 +81,7 @@ class HomeState extends State<Home> {
                 decoration: BoxDecoration(
                   color: const Color(0xFF004d4d),
                 ),
-                  accountName: new Text("Muhammad Mateen"),
+                  accountName: new Text("Muhammad Mateen", style: TextStyle(fontWeight: FontWeight.bold),),
                    accountEmail: new Text("muhammadmateen027@post.umt.edu.pk")),
               new Column(children: drawerOptions)
             ],

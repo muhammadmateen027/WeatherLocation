@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../api/networkcall.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'models/weatherData.dart';
 import '../api/networkcall.dart';
 
 BoxDecoration appBackground() {
@@ -26,6 +25,22 @@ BoxDecoration appBackground() {
   );
 }
 
+
+class WeatherLogs {
+  final String action;
+  final String timeStamp;
+
+  WeatherLogs._({this.action, this.timeStamp});
+
+  factory WeatherLogs.fromJson(Map<String, dynamic> json) {
+    return new WeatherLogs._(
+      action: json['action'],
+      timeStamp: json['timeStamp'] as String,
+    );
+  }
+}
+
+
 class ThirdFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -45,28 +60,44 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<WeatherData> list = List();
+  List<WeatherLogs> list = List();
   var isLoading = false;
 
   @override
   Widget build(BuildContext context) {
      _fetchData();
-    return Container();
-    //   child: FutureBuilder(
-    //   future: _fetchData(),
-    //   builder: (context, snapshot) {
-    //     return ListView.builder(
-    //         itemCount: list.length,
-    //         itemBuilder: (BuildContext context, int index) {
-    //           // print('====>>>>  ' + list[0].city);
-    //           // return Container();
-    //           return ListTile(
-    //             contentPadding: EdgeInsets.all(10.0),
-    //             title: new Text(list[index].city),
-    //           );
-    //         });
-    //   },
-    // ));
+    return Container(
+      child: FutureBuilder(
+      future: _fetchData(),
+      builder: (context, snapshot) {
+        return ListView.builder(
+            itemCount: list.length,
+            itemBuilder: (BuildContext context, int index) {
+              // print('====>>>>  ' + list[0].city);
+              // return Container();
+              return getCard(context, list[index]);
+            });
+      },
+    ));
+  }
+
+  Card getCard(BuildContext context, WeatherLogs log) {
+    // var date = new DateTime.fromMillisecondsSinceEpoch(log.timeStamp.floor() * 1000);
+
+    // print(date);
+
+    return new Card(
+      elevation: 8.0,
+      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      child: Container(
+        decoration: BoxDecoration(color: Colors.white70),
+        child: ListTile(
+                contentPadding: EdgeInsets.all(10.0),
+                title: new Text(log.action, style: TextStyle(fontWeight: FontWeight.bold),),
+                subtitle: new Text(log.timeStamp),
+              ),
+      ),
+    );
   }
 
   _fetchData() async {
@@ -74,10 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
       isLoading = true;
     });
     final response = await http
-        .get("https://weatherapp-97622.firebaseapp.com/api/v1/weather");
+        .get("https://weatherapp-97622.firebaseapp.com/api/v1/weatherlogs");
     if (response.statusCode == 200) {
       list = (json.decode(response.body) as List)
-          .map((data) => new WeatherData.fromJson(data))
+          .map((data) => new WeatherLogs.fromJson(data))
           .toList();
       // setState(() {
       //   isLoading = false;
