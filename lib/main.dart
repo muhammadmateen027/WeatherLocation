@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'place_detail.dart';
-import 'pages/SecondFragment.dart';
-import 'pages/ThirdFragment.dart';
-
-const kGoogleApiKey = "AIzaSyBZoeylp_uRm0JhnYQAHz1Q81u3MOwf8JY";
-
+import 'pages/Weather.dart';
+import 'pages/History.dart';
+import 'constants/utils.dart';
 
 
 class DrawerItem {
@@ -25,9 +23,8 @@ void main() {
 
 class Home extends StatefulWidget {
   final drawerItems = [
-    new DrawerItem("Location", Icons.location_on),
     new DrawerItem("Weather List", Icons.cloud),
-    new DrawerItem("History", Icons.info)
+    new DrawerItem("Weather History", Icons.info)
   ];
 
   @override
@@ -42,12 +39,9 @@ class HomeState extends State<Home> {
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return new ListFragment();
+        return new WeatherFragment();
       case 1:
-        return new ListFragment();
-      case 2:
         return new ThirdFragment();
-
       default:
         return new Text("Error");
     }
@@ -79,7 +73,7 @@ class HomeState extends State<Home> {
             children: <Widget>[
               new UserAccountsDrawerHeader(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF004d4d),
+                  color: const Color(0xFFff8b54),
                 ),
                   accountName: new Text("Muhammad Mateen", style: TextStyle(fontWeight: FontWeight.bold),),
                    accountEmail: new Text("muhammadmateen027@post.umt.edu.pk")),
@@ -89,7 +83,7 @@ class HomeState extends State<Home> {
         ),
         appBar: AppBar(
           title: const Text("Current Location"),
-          backgroundColor: const Color(0xFF004d4d),
+          backgroundColor: const Color(0xFFff8b54),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),

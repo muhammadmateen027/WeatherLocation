@@ -4,31 +4,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'models/CustomWeather.dart';
 import '../place_detail.dart';
+import '../constants/utils.dart';
 
-const weather_api_key = "5eb149801bb9c8508d7c6a3df7df6aa6";
-
-BoxDecoration appBackground() {
-  return new BoxDecoration(
-    // Box decoration takes a gradient
-    gradient: LinearGradient(
-      // Where the linear gradient begins and ends
-      begin: Alignment.topRight,
-      end: Alignment.bottomLeft,
-      // Add one stop for each color. Stops should increase from 0 to 1
-      // stops: [0.5, 0.8, 0.9, 0.3],
-      stops: [0.5, 0.2, 5.0, 0.3],
-      colors: [
-        // Colors are easy thanks to Flutter's Colors class.
-        const Color(0xFF669999),
-        const Color(0xFF669999),
-        const Color(0xFF006666),
-        const Color(0xFF003333),
-      ],
-    ),
-  );
-}
-
-class ListFragment extends StatelessWidget {
+class WeatherFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -54,9 +32,6 @@ class WeatherState extends State<WeatherPageContent> {
             return ListView.builder(
                 itemCount: weatherList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  // print('====>>>>  ' + list[0].city);
-                  // return Container();
-                  // return getCard(context, weatherList[index]);
 
                   return Dismissible(
                     key: Key(weatherList[index].placeId),
@@ -96,11 +71,10 @@ class WeatherState extends State<WeatherPageContent> {
 
   Future<CustomWeather> fetchFromFireBase() async {
     final response = await http
-        .get('https://weatherapp-97622.firebaseapp.com/api/v1/weather');
+        .get(WEATHER_URL+'/weather');
 
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
-      print(response.body);
       weatherList = (json.decode(response.body) as List)
           .map((data) => new CustomWeather.fromJson(data))
           .toList();
@@ -113,16 +87,9 @@ class WeatherState extends State<WeatherPageContent> {
 }
 
 Future<String> removeFromFireBase(String placeId) async {
-  final response = await http.delete(
-      'https://weatherapp-97622.firebaseapp.com/api/v1/weather/' + placeId);
+  final response = await http.delete(WEATHER_URL+'/weather/' + placeId);
 
   if (response.statusCode == 200) {
-    // If the call to the server was successful, parse the JSON
-    print(response.body);
-    // weatherList = (json.decode(response.body) as List)
-    //     .map((data) => new CustomWeather.fromJson(data))
-    //     .toList();
-    // return CustomWeather.fromJson(json.decode(response.body));
     var logs = new Map<String, dynamic>();
     logs["action"] = "Deleted";
     createLogs(body: logs);

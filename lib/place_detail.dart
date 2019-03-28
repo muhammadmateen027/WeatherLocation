@@ -5,10 +5,9 @@ import 'pages/models/weather.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'pages/models/weatherData.dart';
+import 'constants/utils.dart';
 
-const kGoogleApiKey = "AIzaSyBZoeylp_uRm0JhnYQAHz1Q81u3MOwf8JY";
-const weather_api_key = "5eb149801bb9c8508d7c6a3df7df6aa6";
+
 
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 String plceDetailId;
@@ -107,27 +106,6 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
     }
   }
 
-  
-  BoxDecoration appBackground() {
-    return new BoxDecoration(
-      // Box decoration takes a gradient
-      gradient: LinearGradient(
-        // Where the linear gradient begins and ends
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-        // Add one stop for each color. Stops should increase from 0 to 1
-        // stops: [0.5, 0.8, 0.9, 0.3],
-        stops: [0.5, 0.2, 5.0, 0.3],
-        colors: [
-          // Colors are easy thanks to Flutter's Colors class.
-          const Color(0xFF669999),
-          const Color(0xFF669999),
-          const Color(0xFF006666),
-          const Color(0xFF003333),
-        ],
-      ),
-    );
-  }
 
   Container locationInfo(String cityName) {
     List<Widget> weatherList = [];
@@ -161,7 +139,6 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
                     child: Text(
                         snapshot.data.name + ', ' + snapshot.data.sys.country,
                         style: new TextStyle(
-                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 30.0)),
                   ),
@@ -178,12 +155,10 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
                     children: <Widget>[
                       Text("Temperature: ",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 20.0)),
                       Text(snapshot.data.main.temp.toString() + " C",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.normal,
                               fontSize: 18.0))
                     ],
@@ -201,12 +176,10 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
                     children: <Widget>[
                       Text("Pressure: ",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18.0)),
                       Text(snapshot.data.main.pressure.toString() + "%",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0))
                     ],
@@ -224,12 +197,10 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
                     children: <Widget>[
                       Text("Humidity: ",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18.0)),
                       Text(snapshot.data.main.humidity.toString() + "%",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0))
                     ],
@@ -247,12 +218,10 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
                     children: <Widget>[
                       Text("Min Temp: ",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18.0)),
                       Text(snapshot.data.main.tempMin.toString() + " C",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0))
                     ],
@@ -270,12 +239,10 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
                     children: <Widget>[
                       Text("Max Temp: ",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18.0)),
                       Text(snapshot.data.main.tempMax.toString() + " C",
                           style: new TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0))
                     ],
@@ -324,7 +291,7 @@ Future<Weather> fetchPost(String cityName) async {
 }
 
 void createPost({Map body}) async {
-  String url = 'https://weatherapp-97622.firebaseapp.com/api/v1/weather';
+  String url = WEATHER_URL+'/weather';
   final response = await http.post(url, body: body);
   if (response.statusCode < 200 || response.statusCode > 400 || json == null) {
     throw new Exception("Error while fetching data");
@@ -332,7 +299,7 @@ void createPost({Map body}) async {
 }
 
 void createLogs({Map body}) async {
-  String url = 'https://weatherapp-97622.firebaseapp.com/api/v1/weatherlogs';
+  String url = WEATHER_URL+'/weatherlogs';
   final response = await http.post(url, body: body);
   if (response.statusCode < 200 || response.statusCode > 400 || json == null) {
     throw new Exception("Error while fetching data");
