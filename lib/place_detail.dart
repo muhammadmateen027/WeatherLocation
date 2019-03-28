@@ -17,7 +17,6 @@ class PlaceDetailWidget extends StatefulWidget {
   String placeId;
 
   PlaceDetailWidget(String placeId) {
-    print("Hello Mateen Here:: " + placeId);
     this.placeId = placeId;
     if (placeId != null) plceDetailId = placeId.toString();
   }
@@ -36,7 +35,8 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
 
   @override
   void initState() {
-    fetchPlaceDetail();
+    if (plceDetailId != null)
+      fetchPlaceDetail(plceDetailId);
     super.initState();
   }
 
@@ -57,11 +57,8 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
         child: Text(errorLoading),
       );
     } else {
-      final placeDetail = place.result;
-      final location = place.result.geometry.location;
-      final lat = location.lat;
-      final lng = location.lng;
-      final center = LatLng(lat, lng);
+      if (place != null) {
+        final placeDetail = place.result;
 
       title = placeDetail.name;
       bodyChild = new Container(
@@ -70,24 +67,16 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-                child: SizedBox(
-              height: 200.0,
-              child: GoogleMap(
-                onMapCreated: _onMapCreated,
-                options: GoogleMapOptions(
-                    myLocationEnabled: true,
-                    cameraPosition: CameraPosition(target: center, zoom: 15.0)),
-              ),
-            )),
-            Expanded(
-              // child: new Container(),
-              child: buildPlaceDetailList(placeDetail),
+            Expanded(              
+              child: locationInfo(placeDetail.name),
             )
           ],
         ),
+        
       );
     }
+      }
+      
 
     return Scaffold(
         appBar: AppBar(
@@ -97,14 +86,14 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
         body: bodyChild);
   }
 
-  void fetchPlaceDetail() async {
+  void fetchPlaceDetail(String placeId) async {
     setState(() {
       this.isLoading = true;
       this.errorLoading = null;
     });
 
     PlacesDetailsResponse place =
-        await _places.getDetailsByPlaceId(widget.placeId);
+        await _places.getDetailsByPlaceId(placeId);
 
     if (mounted) {
       setState(() {
@@ -118,38 +107,7 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
     }
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-    final placeDetail = place.result;
-    final location = place.result.geometry.location;
-    final lat = location.lat;
-    final lng = location.lng;
-    final center = LatLng(lat, lng);
-    var markerOptions = MarkerOptions(
-        position: center,
-        infoWindowText: InfoWindowText(
-            "${placeDetail.name}", "${placeDetail.formattedAddress}"));
-    mapController.addMarker(markerOptions);
-    mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: center, zoom: 15.0)));
-  }
-
-  String buildPhotoURL(String photoReference) {
-    return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoReference}&key=${kGoogleApiKey}";
-  }
-
-  Container buildPlaceDetailList(PlaceDetails placeDetail) {
-    return Container(
-      // shrinkWrap: true,
-      child: new Container(
-        child: Padding(
-            padding:
-                EdgeInsets.only(top: 0.0, left: 8.0, right: 8.0, bottom: 4.0),
-            child: locationInfo(placeDetail.name)),
-      ),
-    );
-  }
-
+  
   BoxDecoration appBackground() {
     return new BoxDecoration(
       // Box decoration takes a gradient
@@ -175,7 +133,7 @@ class PlaceDetailState extends State<PlaceDetailWidget> {
     List<Widget> weatherList = [];
     return Container(
       child: FutureBuilder<Weather>(
-        future: fetchPost(cityName),
+        future: fetchPost(cityName.toString()),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var map = new Map<String, dynamic>();
@@ -355,8 +313,7 @@ Future<Weather> fetchPost(String cityName) async {
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON
-    print("Response String: " + response.body);
-    return Weather.fromJson(json.decode(response.body));
+    return Weather.fromJson(json.decode(response.body.toString()));
   } else {
     // If that call was not successful, throw an error.
     throw Exception('WeatherAPI Failed to load post');
@@ -370,6 +327,5 @@ Future<WeatherData> createPost({Map body}) async {
     throw new Exception("Error while fetching data");
   }
 
-  print("Data Posted into Db: " + response.body);
   return WeatherData.fromJson(json.decode(response.body));
 }

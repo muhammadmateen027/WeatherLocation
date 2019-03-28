@@ -31,32 +31,34 @@ class LocationState extends State<LocationFragmentContent> {
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    Widget expandedChild;
+    // Widget expandedChild;
 
-    if (isLoading) {
-      expandedChild = Center(child: CircularProgressIndicator(value: null));
-    } else if (errorMessage != null) {
-      expandedChild = Center(
-        child: Text(errorMessage),
-      );
-    } else {
-      expandedChild = buildPlacesList();
-    }
-    return new Column(
-      children: <Widget>[
-        Container(
-          child: SizedBox(
-              height: 200.0,
-              child: GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  options: GoogleMapOptions(
-                      myLocationEnabled: true,
-                      cameraPosition:
-                          const CameraPosition(target: LatLng(0.0, 0.0))))),
-        ),
-        Expanded(child: expandedChild)
-      ],
-    );
+    // if (isLoading) {
+    //   expandedChild = Center(child: CircularProgressIndicator(value: null));
+    // } else if (errorMessage != null) {
+    //   expandedChild = Center(
+    //     child: Text(errorMessage),
+    //   );
+    // } else {
+    //   expandedChild = buildPlacesList();
+    // }
+    // return new Column(
+    //   children: <Widget>[
+    //     Container(
+    //       child: SizedBox(
+    //           height: 200.0,
+    //           child: GoogleMap(
+    //               onMapCreated: _onMapCreated,
+    //               options: GoogleMapOptions(
+    //                   myLocationEnabled: true,
+    //                   cameraPosition:
+    //                       const CameraPosition(target: LatLng(0.0, 0.0))))),
+    //     ),
+    //     Expanded(child: expandedChild)
+    //   ],
+    // );
+
+    return new Container();
   }
 
   void refresh() async {
@@ -121,18 +123,18 @@ class LocationState extends State<LocationFragmentContent> {
   Future<void> _handlePressButton() async {
     print("icon Button Pressed: ");
     try {
-      final center = await getUserLocation();
+      // final center = await getUserLocation();
       Prediction p = await PlacesAutocomplete.show(
           context: context,
-          strictbounds: center == null ? false : true,
+          // strictbounds: center == null ? false : true,
           apiKey: kGoogleApiKey,
           onError: onError,
           mode: Mode.fullscreen,
-          language: "en",
-          location: center == null
-              ? null
-              : Location(center.latitude, center.longitude),
-          radius: center == null ? null : 10000);
+          language: "en");
+          // location: center == null
+          //     ? null
+          //     : Location(center.latitude, center.longitude),
+          // radius: center == null ? null : 10000);
 
       showDetailPlace(p.placeId);
     } catch (e) {

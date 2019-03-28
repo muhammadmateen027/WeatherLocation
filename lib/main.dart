@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'place_detail.dart';
-
-import 'pages/locationFragment.dart';
 import 'pages/SecondFragment.dart';
 import 'pages/ThirdFragment.dart';
 
@@ -44,7 +42,7 @@ class HomeState extends State<Home> {
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return new LocationFragment();
+        return new ListFragment();
       case 1:
         return new ListFragment();
       case 2:
@@ -93,17 +91,6 @@ class HomeState extends State<Home> {
           title: const Text("Current Location"),
           backgroundColor: const Color(0xFF004d4d),
           actions: <Widget>[
-            // isLoading
-            //     ? IconButton(
-            //         icon: Icon(Icons.timer),
-            //         onPressed: () {},
-            //       )
-            //     : IconButton(
-            //         icon: Icon(Icons.refresh),
-            //         onPressed: () {
-            //           refresh();
-            //         },
-            //       ),
             IconButton(
               icon: Icon(Icons.search),
               onPressed: () {
